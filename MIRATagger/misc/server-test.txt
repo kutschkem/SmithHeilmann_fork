@@ -1,0 +1,20 @@
+Herbert	NNP
+Simon	NNP
+was	VBD
+awarded	VBN
+the	DT
+Nobel	NNP
+Prize	NNP
+in	IN
+Economics	NNP
+in	IN
+1978	CD
+.	.
+
+Simon	NNP
+was	VBD
+a	DT
+Carnegie	NNP
+Mellon	NNP
+professor	NN
+.	.
