@@ -791,7 +791,7 @@ public class SentenceSimplifier {
 			subord = matcher.getNode("sub");
 			Tree verb = matcher.getNode("verb");
 			String verbLemma = AnalysisUtilities.getInstance().getLemma(
-					verb.yield().toString(), verb.label().toString());
+					AnalysisUtilities.orginialSentence(verb.yield()), verb.label().toString());
 
 			if (!verbImpliesComplement(verbLemma)) {
 				continue;
