@@ -31,7 +31,7 @@ public class InitialTransformationStep {
 		//extract simplifications for each input sentence and record their input sentence numbers
 		int sentnum = 0;
 		for(Tree sentence: sentences){
-			if(AnalysisUtilities.filterOutSentenceByPunctuation(sentence.yield().toString())){
+			if(AnalysisUtilities.filterOutSentenceByPunctuation(AnalysisUtilities.orginialSentence(sentence.yield()))){
 				sentnum++;
 				continue;
 			}

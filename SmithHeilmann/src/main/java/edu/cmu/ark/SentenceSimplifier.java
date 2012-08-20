@@ -726,7 +726,7 @@ public class SentenceSimplifier {
 
 	private String findTense(Tree node) {
 		if (node.label().equals("MD")) {
-			if (node.yield().toString().matches("^(would|could)$")) {
+			if (AnalysisUtilities.orginialSentence(node.yield()).matches("^(would|could)$")) {
 				return "VBD";
 			}
 		}
@@ -970,13 +970,13 @@ public class SentenceSimplifier {
 					missingArgumentTree.removeChild(i);
 					//remove the comma after the relative clause
 					if (i < missingArgumentTree.numChildren()
-							&& missingArgumentTree.getChild(i).label().toString().equals(
+							&& missingArgumentTree.getChild(i).label().value().equals(
 									",")) {
 						missingArgumentTree.removeChild(i);
 					}
 					//remove the comma before the relative clause
 					if (i > 0
-							&& missingArgumentTree.getChild(i - 1).label().toString().equals(
+							&& missingArgumentTree.getChild(i - 1).label().value().equals(
 									",")) {
 						missingArgumentTree.removeChild(i - 1);
 						i--;

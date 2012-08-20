@@ -65,7 +65,7 @@ public class AnalysisUtilities {
 		conjugator = new VerbConjugator();
 		conjugator.load(ClassLoader.getSystemResource(GlobalProperties.getProperties().getProperty(
 				"verbConjugationsFile",
-				"config" + File.separator + "verbConjugations.txt")).getFile());
+				"config/verbConjugations.txt")).getFile());
 		headfinder = new CollinsHeadFinder();
 		tree_factory = new LabeledScoredTreeFactory();
 		tlp = new PennTreebankLanguagePack();
@@ -312,9 +312,9 @@ public class AnalysisUtilities {
 		if (parser == null) {
 			try {
 				Options op = new Options();
-				String serializedInputFileOrUrl = GlobalProperties.getProperties().getProperty(
+				String serializedInputFileOrUrl = ClassLoader.getSystemResource(GlobalProperties.getProperties().getProperty(
 						"parserGrammarFile",
-						"config" + File.separator + "englishFactored.ser.gz");
+						"config/englishFactored.ser.gz")).toExternalForm();
 				parser = LexicalizedParser.loadModel(serializedInputFileOrUrl, op);
 				//				int maxLength = new Integer(GlobalProperties.getProperties().getProperty("parserMaxLength", "40")).intValue();
 				//				parser.setMaxLength(maxLength);
@@ -535,7 +535,9 @@ public class AnalysisUtilities {
 	}
 	
 	public static String orginialSentence(List<Label> l){
-		return StringUtils.join(Arrays.asList(stringArrayFromLabels(l))," ");
+		String text = StringUtils.join(Arrays.asList(stringArrayFromLabels(l))," ");
+		text = text.replaceAll("\\s(?=\\p{Punct})", "");
+		return text;
 	}
 
 	public String getSurfaceForm(String lemma, String pos) {

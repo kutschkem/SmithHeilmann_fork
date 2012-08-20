@@ -30,7 +30,7 @@ import java.util.Properties;
 public class GlobalProperties {
 	public static Properties getProperties(){
 		if(properties == null){
-			String defaultPath = "config"+File.separator+"QuestionTransducer.properties";
+			String defaultPath = ClassLoader.getSystemResource("config/QuestionTransducer.properties").getFile();
 			loadProperties(defaultPath);
 		}
 		return properties;
