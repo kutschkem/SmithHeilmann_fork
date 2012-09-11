@@ -30,6 +30,7 @@ import java.util.Properties;
 public class GlobalProperties {
 	public static Properties getProperties(){
 		if(properties == null){
+			// 9/2012 Michael Kutschke: changed to allow configuration files in the classpath
 			String defaultPath = ClassLoader.getSystemResource("config/QuestionTransducer.properties").getFile();
 			loadProperties(defaultPath);
 		}

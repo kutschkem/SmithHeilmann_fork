@@ -20,6 +20,8 @@
 // Carnegie Mellon University
 // mheilman@cmu.edu
 // http://www.cs.cmu.edu/~mheilman
+//
+// 9/2012 Michael Kutschke: fix compatibility issues with newer versions of StanfordNLP tools
 
 package edu.cmu.ark;
 
@@ -40,7 +42,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
@@ -614,12 +615,13 @@ public class QuestionTransducer {
 		ps.add(Tsurgeon.parseOperation("insert (SBARQ PLACEHOLDER) >0 root"));
 		p = Tsurgeon.collectOperations(ps);
 		ops.add(new Pair<TregexPattern, TsurgeonPattern>(matchPattern, p));
-		//move qclause in
-		tregexOpStr = "ROOT < SBARQ=mainclause < SQ=qclause";
+		//move qclause in (9/2012 Michael Kutschke: seperated this from above operation, as newer TSurgeon versions
+		// don't seem to support naming nodes created through TSurgeon operations)
 		ps.clear();
+		tregexOpStr = "ROOT < SBARQ=mainclause < SQ=qclause";
+		matchPattern = TregexPatternFactory.getPattern(tregexOpStr);
 		ps.add(Tsurgeon.parseOperation("move qclause >-1 mainclause"));
 		p = Tsurgeon.collectOperations(ps);
-		matchPattern = TregexPatternFactory.getPattern(tregexOpStr);
 		ops.add(new Pair<TregexPattern, TsurgeonPattern>(matchPattern,p));
 		
 		Tsurgeon.processPatternsOnTree(ops, copyTree);
@@ -813,6 +815,8 @@ public class QuestionTransducer {
 				ops.add(new Pair<TregexPattern, TsurgeonPattern>(matchPattern,
 						p));
 				
+				// 9/2012 Michael Kutschke: split these two steps as naming nodes created from TSurgeon operations
+				// is unsupported in newer TSurgeon versions
 				ps.clear();
 				tregexOpStr = "ROOT < (S=mainclause < (VP=predphrase [ < (/VB.?/=tensedverb !< is|was|were|am|are|has|have|had|do|does|did) | < /VB.?/=tensedverb !< VP ]) < MAINVP=mainvp)";
 				matchPattern = TregexPatternFactory.getPattern(tregexOpStr);
@@ -996,7 +1000,7 @@ public class QuestionTransducer {
 		matcher = matchPattern.matcher(inputTree);
 		if (matcher.find()) {
 			subjectTree = matcher.getMatch();
-			subjectString = subjectTree.yield().toString(); //FIXME
+			subjectString = AnalysisUtilities.orginialSentence(subjectTree.yield());
 			if (subjectString.equalsIgnoreCase("I")
 					|| subjectString.equalsIgnoreCase("you")) {
 				tregexOpStr = "ROOT=root < (S=mainclause < (VP=verbphrase < (/VB.?/=tensedverb)))";

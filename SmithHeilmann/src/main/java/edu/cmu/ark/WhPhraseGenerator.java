@@ -19,6 +19,9 @@ import edu.stanford.nlp.util.Pair;
  * 
  * @author Michael Heilman (mheilman@cs.cmu.edu)
  */
+// 9-2012 Michael Kutschke: fixed compatibility issues
+// 							- replaced label().toString() with label().value()
+//							- replaced Tree.yield().toString() with AnalysisUtilities.originalSentence(Tree.yield())
 public class WhPhraseGenerator {
 
 	public WhPhraseGenerator() {
@@ -93,6 +96,7 @@ public class WhPhraseGenerator {
 	 * method identifies the semantic head (e.g., "friends" for "one of my friends"), which is used
 	 * to choose appropriate WH words.
 	 */
+	// 9/2012 Michael Kutschke: fixed compatibility issues
 	public void setAnswer(Tree ans, String origSentence) {
 		answerTree = ans;
 		if (answerTree == null) return;
@@ -301,7 +305,7 @@ public class WhPhraseGenerator {
 				ps = new ArrayList<TsurgeonPattern>();
 				ops = new ArrayList<Pair<TregexPattern, TsurgeonPattern>>();
 
-				String possessorToken = matcher.getNode("possessor").getChild(0).label().toString();
+				String possessorToken = matcher.getNode("possessor").getChild(0).label().value();
 				int possIndex = sentenceTokens.indexOf(possessorToken);
 				if (possIndex == -1) return;
 				String sst = supersenseTags.get(possIndex);
@@ -377,7 +381,7 @@ public class WhPhraseGenerator {
 				//e.g., John left IMMEDIATELY after the meeting -> What did John leave IMMEDIATELY after?
 				//Note: such modifiers could probably just be dropped to simplify things...
 				if (answerPrepositionModifier != null) {
-					prepositionModifierStr = answerPrepositionModifier.yield().toString();
+					prepositionModifierStr = AnalysisUtilities.orginialSentence(answerPrepositionModifier.yield());
 				}
 
 				leftOverPrepositions.add("(PP " + prepositionModifierStr

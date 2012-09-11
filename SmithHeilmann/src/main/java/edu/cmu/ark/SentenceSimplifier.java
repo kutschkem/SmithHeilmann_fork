@@ -20,6 +20,11 @@
 // Carnegie Mellon University
 // mheilman@cmu.edu
 // http://www.cs.cmu.edu/~mheilman
+//
+// 9/2012 Michael Kutschke : fixed compatibility issues with newer versions of StanfordNLP tools, amongst which:
+//							- replaced label.toString() with label.value()
+//							- replaced Tree.yield().toString() with AnalysisUtilities.originalSentence(Tree.yield())
+
 
 package edu.cmu.ark;
 
@@ -692,8 +697,8 @@ public class SentenceSimplifier {
 			Tree p = matcher.getNode("participial").deepCopy();
 			Tree verb = matcher.getNode("verb");
 			String verbLemma = AnalysisUtilities.getInstance().getLemma(
-					verb.getChild(0).label().toString(),
-					verb.label().toString());
+					verb.getChild(0).label().value(),
+					verb.label().value());
 			String newVerb = AnalysisUtilities.getInstance().getSurfaceForm(
 					verbLemma, verbPOS);
 			int verbIndex = p.indexOf(verb);
@@ -725,12 +730,12 @@ public class SentenceSimplifier {
 	}
 
 	private String findTense(Tree node) {
-		if (node.label().equals("MD")) {
+		if (node.label().value().equals("MD")) {
 			if (AnalysisUtilities.orginialSentence(node.yield()).matches("^(would|could)$")) {
 				return "VBD";
 			}
 		}
-		return node.label().toString();
+		return node.label().value();
 	}
 
 	/**
@@ -791,7 +796,7 @@ public class SentenceSimplifier {
 			subord = matcher.getNode("sub");
 			Tree verb = matcher.getNode("verb");
 			String verbLemma = AnalysisUtilities.getInstance().getLemma(
-					AnalysisUtilities.orginialSentence(verb.yield()), verb.label().toString());
+					AnalysisUtilities.orginialSentence(verb.yield()), verb.label().value());
 
 			if (!verbImpliesComplement(verbLemma)) {
 				continue;
@@ -864,7 +869,7 @@ public class SentenceSimplifier {
 			}*/
 
 			//make a new tree for a copula sentence with the noun and appositive
-			String pos = verbtree.label().toString();
+			String pos = verbtree.label().value();
 			String copula;
 			if (pos.equals("VBD")) {
 				if (isPlural(nountree)) {
@@ -1021,7 +1026,7 @@ public class SentenceSimplifier {
 					subjectMovement = false;
 				} else if (matcher.getNode("preposition") != null) {
 					String tmp = "(PP (IN "
-							+ matcher.getNode("preposition").yield().toString()
+							+ AnalysisUtilities.orginialSentence(matcher.getNode("preposition").yield())
 							+ ") " + missingArgumentTree.toString() + ")";
 					missingArgumentTree = AnalysisUtilities.getInstance().readTreeFromString(
 							tmp);
@@ -1094,7 +1099,7 @@ public class SentenceSimplifier {
 			if (modifiers.contains(modifier)) continue; //just in case the tregex expression catches duplicates
 			//add commas and quotation marks if they appeared in the original
 			if (idx > 0
-					&& mainclause.getChild(idx - 1).label().toString().equals(
+					&& mainclause.getChild(idx - 1).label().value().equals(
 							"``")) {
 				modifiers.add(AnalysisUtilities.getInstance().readTreeFromString(
 						"(, ,)"));
@@ -1163,18 +1168,18 @@ public class SentenceSimplifier {
 			Tree verb = matcher.getNode("tense");
 			makeDeterminerDefinite(nountree);
 
-			if (vptree.label().toString().equals("PP"))
+			if (vptree.label().value().equals("PP"))
 				vptree.label().setValue("VP");
 			String verbPOS = findTense(matcher.getNode("maintense"));
 			if (vptree == null || nountree == null) return;
 
 			String newTreeStr;
-			if (verb.label().toString().equals("VBG")) {
+			if (verb.label().value().equals("VBG")) {
 				//for present partcipials, change the tense to the tense of the main verb
 				//e.g., walking to the store -> walked to the store
 				String verbLemma = AnalysisUtilities.getInstance().getLemma(
-						verb.getChild(0).label().toString(),
-						verb.label().toString());
+						verb.getChild(0).label().value(),
+						verb.label().value());
 				String newVerb = AnalysisUtilities.getInstance().getSurfaceForm(
 						verbLemma, verbPOS);
 				int verbIndex = vptree.indexOf(verb);

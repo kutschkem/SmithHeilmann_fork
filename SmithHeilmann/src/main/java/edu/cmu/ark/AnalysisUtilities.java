@@ -20,11 +20,12 @@
 // Carnegie Mellon University
 // mheilman@cmu.edu
 // http://www.cs.cmu.edu/~mheilman
+//
+// 9/2012 Michael Kutschke: added methods originalSentence and stringArrayFromLabels 
 
 package edu.cmu.ark;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -526,6 +527,10 @@ public class AnalysisUtilities {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @author Michael Kutschke 9/2012
+	 */
 	public static String[] stringArrayFromLabels(List<Label> l){
 		List<String> values = new ArrayList<String>();
 		for(Label lb: l){
@@ -534,6 +539,13 @@ public class AnalysisUtilities {
 		return values.toArray(new String[0]);
 	}
 	
+	/**
+	 * outputs the label values. This is used to replace the .yield().toString() construct that was
+	 * commonly found in the original source code, but is outdated and does not work as expected anymore with newer
+	 * versions of the StanfordNLP tools.
+	 * 
+	 * @author Michael Kutschke 9/2012
+	 */
 	public static String orginialSentence(List<Label> l){
 		String text = StringUtils.join(Arrays.asList(stringArrayFromLabels(l))," ");
 		text = text.replaceAll("\\s(?=\\p{Punct})", "");
