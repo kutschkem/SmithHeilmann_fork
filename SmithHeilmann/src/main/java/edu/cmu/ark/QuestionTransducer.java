@@ -867,7 +867,7 @@ public class QuestionTransducer {
 				tensedVerbSubtree.label().value());
 		String pos = tensedVerbSubtree.value();
 		if (pos.equals("VBD")) {
-			res = tensedVerbSubtree.value();
+			res = tensedVerbSubtree.toString();
 		} else {
 			res = "(VBZ "
 					+ AnalysisUtilities.getInstance().getSurfaceForm(lemma,
